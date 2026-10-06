@@ -16,10 +16,13 @@ $libraries_url = "$plex_ip/library/sections?X-Plex-Token=$token"
 
 try {
     # Fetch and parse the libraries XML
-    [xml]$libs = Invoke-RestMethod -Uri$libraries_url
-    Write-Host "`nAvailable Libraries:" -ForegroundColor Yellow
+    [xml]$libs = Invoke-RestMethod -Uri $libraries_url
+    Write-Host "`nAvailable Movie Libraries:" -ForegroundColor Yellow
     foreach ($dir in $libs.MediaContainer.Directory) {
-        Write-Host "  Key: $($dir.key) - $($dir.title) ($($dir.type))"
+        # Filter out TV shows and Music to prevent formatting errors
+        if ($dir.type -eq "movie") {
+            Write-Host "  Key: $($dir.key) - $($dir.title)"
+        }
     }
 }
 catch {
