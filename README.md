@@ -6,6 +6,8 @@ These scripts were developed strictly for personal use to solve a specific migra
 
 Please use with care. Always run a test on a single file or small library first (as outlined in the steps below), and always ensure you have backups of your Jellyfin database and media directories before running automated scripts. Use at your own risk!
 
+---
+
 **Original Author:** [2dee11](https://github.com/2dee11)  
 *Forked and updated to include exact ID matching (IMDb/TMDb/TVDb), streamlined PowerShell orchestration, and improved Collections parsing.*
 
@@ -82,3 +84,5 @@ Jellyfin will read the `.nfo` files and your movies should be just as they were 
 
 ## Final Note
 > "I do not plan on maintaining this and updating this with every change to Plex or Jellyfin, if someone else proposes changes I will try and add them." — **2dee11**
+
+## Good luck!
