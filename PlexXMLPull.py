@@ -18,16 +18,31 @@ def generate_audit_log(input_xml, output_txt):
                 added_at = elem.get('addedAt')
                 view_count = elem.get('viewCount')
                 last_viewed_at = elem.get('lastViewedAt')
+
                 imdb_id = tmdb_id = tvdb_id = None
-                for g in elem.findall('.//Guid'):
-                    guid_str = g.get('id')
-                    if guid_str:
-                        if guid_str.startswith('imdb://'):
-                            imdb_id = guid_str.split('://')[1]
-                        elif guid_str.startswith('tmdb://'):
-                            tmdb_id = guid_str.split('://')[1]
-                        elif guid_str.startswith('tvdb://'):
-                            tvdb_id = guid_str.split('://')[1]
+                main_guid = elem.get('guid', '')
+                
+                # 1. Fallback for legacy Plex agents (e.g., com.plexapp.agents.themoviedb://11548?lang=en)
+                if main_guid.startswith('com.plexapp.agents.'):
+                    if 'themoviedb://' in main_guid:
+                        tmdb_id = main_guid.split('://')[1].split('?')[0]
+                    elif 'imdb://' in main_guid:
+                        imdb_id = main_guid.split('://')[1].split('?')[0]
+                    elif 'thetvdb://' in main_guid:
+                        tvdb_id = main_guid.split('://')[1].split('?')[0]
+                
+                # 2. Modern Plex agents (plex://) using child Guid tags
+                if not (imdb_id or tmdb_id or tvdb_id):
+                    all_guids = elem.findall('.//Guid') + elem.findall('.//guid')
+                    for g in all_guids:
+                        guid_str = g.get('id')
+                        if guid_str:
+                            if guid_str.startswith('imdb://'):
+                                imdb_id = guid_str.split('://')[1]
+                            elif guid_str.startswith('tmdb://'):
+                                tmdb_id = guid_str.split('://')[1]
+                            elif guid_str.startswith('tvdb://'):
+                                tvdb_id = guid_str.split('://')[1]
                 
                 # Defensive type casting for timestamps
                 added_at_date = None
