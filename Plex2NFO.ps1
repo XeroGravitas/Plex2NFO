@@ -1,5 +1,40 @@
 # --- Plex to Jellyfin NFO Orchestrator ---
 
+# Safely establish the working directory
+$working_dir = $PSScriptRoot
+if ([string]::IsNullOrEmpty($working_dir)) {
+    $working_dir = (Get-Location).Path
+}
+Set-Location $working_dir
+
+Write-Host "Checking prerequisites..." -ForegroundColor Cyan
+
+# 1. Check if Python is installed and in the system PATH
+if (!(Get-Command python -ErrorAction SilentlyContinue)) {
+    Write-Host "Error: Python is not installed or not added to your system PATH." -ForegroundColor Red
+    Write-Host "Please install Python 3 from python.org (ensure 'Add Python to PATH' is checked) and try again." -ForegroundColor Yellow
+    Pause
+    exit
+}
+
+# 2. Check if the required Python scripts exist in the working directory
+$missingFiles = $false
+if (!(Test-Path "PlexXMLPull.py")) {
+    Write-Host "Error: PlexXMLPull.py is missing from $working_dir" -ForegroundColor Red
+    $missingFiles = $true
+}
+if (!(Test-Path "JellyfinNFOCreator.py")) {
+    Write-Host "Error: JellyfinNFOCreator.py is missing from $working_dir" -ForegroundColor Red
+    $missingFiles = $true
+}
+if ($missingFiles) {
+    Write-Host "Please ensure all required scripts are extracted to the same folder before running." -ForegroundColor Yellow
+    Pause
+    exit
+}
+
+Write-Host "Prerequisites met.`n" -ForegroundColor Green
+
 # Prompt for the variables dynamically at runtime
 $plex_ip = Read-Host "Enter your Plex Server URL (e.g., http://192.168.1.50:32400)"
 $token = Read-Host "Enter your Plex Token - 'Get Info' on any media item > View XML. The token is at the end of the URL"
