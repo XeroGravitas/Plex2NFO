@@ -18,7 +18,16 @@ def generate_audit_log(input_xml, output_txt):
                 added_at = elem.get('addedAt')
                 view_count = elem.get('viewCount')
                 last_viewed_at = elem.get('lastViewedAt')
-                guid = elem.get('guid')
+                imdb_id = tmdb_id = tvdb_id = None
+                for g in elem.findall('.//Guid'):
+                    guid_str = g.get('id')
+                    if guid_str:
+                        if guid_str.startswith('imdb://'):
+                            imdb_id = guid_str.split('://')[1]
+                        elif guid_str.startswith('tmdb://'):
+                            tmdb_id = guid_str.split('://')[1]
+                        elif guid_str.startswith('tvdb://'):
+                            tvdb_id = guid_str.split('://')[1]
                 
                 # Defensive type casting for timestamps
                 added_at_date = None
@@ -44,8 +53,12 @@ def generate_audit_log(input_xml, output_txt):
                 out_file.write(f"Movie Title: {movie_title}\n")
                 if year:
                     out_file.write(f"  Year: {year}\n")
-                if guid:
-                    out_file.write(f"  Plex GUID: {guid}\n")
+                if imdb_id:
+                    out_file.write(f"  IMDB ID: {imdb_id}\n")
+                if tmdb_id:
+                    out_file.write(f"  TMDB ID: {tmdb_id}\n")
+                if tvdb_id:
+                    out_file.write(f"  TVDB ID: {tvdb_id}\n")
                 if title_sort:
                     out_file.write(f"  TitleSort: {title_sort}\n")
                 if original_title:
