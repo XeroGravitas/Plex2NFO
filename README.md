@@ -1,5 +1,11 @@
 # Plex XML To Jellyfin .NFO Files
 
+### Disclaimer 
+
+These scripts were developed strictly for personal use to solve a specific migration headache on my own home server. While they work perfectly for my setup, your environment, folder structures, or Plex agent history might behave differently.
+
+Please use with care. Always run a test on a single file or small library first (as outlined in the steps below), and always ensure you have backups of your Jellyfin database and media directories before running automated scripts. Use at your own risk!
+
 **Original Author:** [2dee11](https://github.com/2dee11)  
 *Forked and updated to include exact ID matching (IMDb/TMDb/TVDb), streamlined PowerShell orchestration, and improved Collections parsing.*
 
@@ -47,4 +53,32 @@ The PowerShell script will pause and ask you to review `audit_log.txt`. Open thi
 ### 4. Generate the .NFO Files
 If the audit log looks good, type `Y` in the PowerShell window to continue. 
 
-The script will run `JellyfinNFOCreator.py`. This will read your `audit_log.txt` and generate a perfectly formatted `MOVIENAME.nfo` file directly next to every media file in your directories
+The script will run `JellyfinNFOCreator.py`. This will read your `audit_log.txt` and generate a perfectly formatted `MOVIENAME.nfo` file directly next to every media file in your directories. 
+
+> "Note: you may get a few 'Directory does not exist' errors for folder names with special characters like Alien3 or Joker: Folie à Deux. Check the output... I just fixed these manually myself within Jellyfin." — **2dee11**
+
+### 5. Ingest into Jellyfin
+Go to your Jellyfin WebUI:
+1. Go to your Dashboard -> Libraries.
+2. Click the three-dot menu on the updated library and select **Scan Library**.
+3. Choose **Replace all metadata** and let it run. 
+
+Jellyfin will read the `.nfo` files and your movies should be just as they were in Plex, locked to the exact database matches. 
+
+> "After this initial bulk 'upload' I would suggest going into settings and selecting Manage Library for each Library and under Metadata Savers section check Nfo. Now scan library and replace all metadata... Now from this point on any changes you make Jellyfin will keep those new movie.nfo files updated." — **2dee11**
+
+---
+
+## Notes & Limitations
+
+* **No TV Show Support:** Currently, this script only parses Movie libraries. It does not work for TV Shows.
+* **Collections Cleanup:** The scripts correctly format the XML tags for Box Sets/Collections, but depending on your Jellyfin setup, you may still need the **TMDb Box Sets Plugin** installed to pull down the artwork and metadata for those collections.
+* **Optional Scripts Removed:** Previous versions of this repo included standalone scripts just for exporting Collections. These have been archived/removed to streamline the main working branch.
+
+## Troubleshooting
+> "I had some issues with accessing a network drive to store the files in. Running [net use] in CMD helped figure out which drives were accessible or not and troubleshooting accordingly... YMMV" — **2dee11**
+
+(I also found running standard PowerShell without Administrator privileges mapped network drives best for the orchestrator script).
+
+## Final Note
+> "I do not plan on maintaining this and updating this with every change to Plex or Jellyfin, if someone else proposes changes I will try and add them." — **2dee11**
