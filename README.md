@@ -19,6 +19,7 @@ Please use with care. Always run a test on a single file or small library first 
 It now pulls the exact provider IDs (TMDb, IMDb, TVDb) straight from Plex so that Jellyfin matches your media 1:1, bypassing Jellyfin's fuzzy scrapers entirely.
 
 ## Prerequisites
+* **OS:** Windows (Native). *Note: This tool is designed and tested for Windows host environments; path translation for Linux/Docker container mounts is not handled automatically.*
 * **Python 3** installed on your PC.
 * **PowerShell** (Windows native).
 * Your **Plex IP Address** (e.g., `http://192.168.1.50:32400`).
@@ -76,6 +77,18 @@ Jellyfin will read the `.nfo` files and your movies should be just as they were 
 * **No TV Show Support:** Currently, this script only parses Movie libraries. It does not work for TV Shows.
 * **Collections Cleanup:** The scripts correctly format the XML tags for Box Sets/Collections, but depending on your Jellyfin setup, you may still need the **TMDb Box Sets Plugin** installed to pull down the artwork and metadata for those collections.
 * **Optional Scripts Removed:** Previous versions of this repo included standalone scripts just for exporting Collections. These have been archived/removed to streamline the main working branch.
+
+## Potential Solutions for Docker Setups
+
+The core script logic does not care about Docker. It simply reads XML from a Plex web endpoint, generates standard .nfo XML files, and writes them directly into your movie folders. Theoretically, as long as the file paths match from the POV of both server's target folders, it should work. Again, *theoretically.*
+
+#### Option A: 
+Find & Replace in `audit_log.txt`: The user opens `audit_log.txt` during the pause step and uses Notepad to Find & Replace `/data/movies` with `Z:\Media\Movies` before hitting Y in PowerShell.
+
+#### Option B: 
+(Run inside a container): Run the Python script directly inside the Docker container shell (where the paths native to Plex/Jellyfin actually exist).
+
+Please feel free to fork a Docker-friendly version!
 
 ## Troubleshooting
 > "I had some issues with accessing a network drive to store the files in. Running [net use] in CMD helped figure out which drives were accessible or not and troubleshooting accordingly... YMMV" — **2dee11**
