@@ -79,6 +79,11 @@ def write_nfos(movies):
             continue
 
         nfo_path = Path(file_path).with_suffix('.nfo')
+
+        if nfo_path.exists():
+            print(f"Skipping {movie.get('title')} - NFO already exists.")
+            continue
+        
         nfo_dir = nfo_path.parent
 
         if not nfo_dir.exists():
