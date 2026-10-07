@@ -23,7 +23,7 @@ It now pulls the exact provider IDs (TMDb, IMDb, TVDb) straight from Plex so tha
 - **OS:** Windows (Native). _Note: This tool is designed and tested for Windows host environments; path translation for Linux/Docker container mounts is not handled automatically._
 - **Python 3** installed on your PC.
 - **PowerShell** (Windows native).
-- Your **Plex IP Address** (e.g., `http://192.168.1.50:32400`).
+- Your **Plex IP Address** (e.g., `http://192.168.1.50:32400`) (Please temporarily set Secure Connections to `Preferred` in Plex > Settings > Network to avoid any SSL cert conflicts).
 - Your **Plex Token** (Find this by clicking _Get Info_ on any media item in Plex, then _View XML_. The token is at the very end of the URL). More info: [Plex Support](https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/)
 
 ---
