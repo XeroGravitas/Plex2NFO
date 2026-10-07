@@ -16,7 +16,7 @@ Please use with care. Always run a test on a single file or small library first 
 > This collection of scripts will help you do just that as easily as possible. Please note that I am by no means a developer, just an idiot on the internet with access to ChatGPT and a little know how. I tried to segment this as much as possible to try and prevent issues but use at your own risk." 
 > — **2dee11**
 
-It now pulls the exact provider IDs (TMDb, IMDb, TVDb) straight from Plex so that Jellyfin matches your media 1:1, bypassing Jellyfin's fuzzy scrapers entirely.
+It now pulls the exact provider IDs (TMDb, IMDb, TVDb) straight from Plex so that Jellyfin matches your media 1:1, bypassing Jellyfin's fuzzy scrapers entirely. It also robustly handles both modern and legacy Plex Metadata Agents (useful for those of us with a decade-old library), and parses non-English (UTF-8) character sets correctly.
 
 ## Prerequisites
 * **OS:** Windows (Native). *Note: This tool is designed and tested for Windows host environments; path translation for Linux/Docker container mounts is not handled automatically.*
@@ -57,8 +57,6 @@ The PowerShell script will pause and ask you to review `audit_log.txt`. Open thi
 If the audit log looks good, type `Y` in the PowerShell window to continue. 
 
 The script will run `JellyfinNFOCreator.py`. This will read your `audit_log.txt` and generate a perfectly formatted `MOVIENAME.nfo` file directly next to every media file in your directories. 
-
-> "Note: you may get a few 'Directory does not exist' errors for folder names with special characters like Alien3 or Joker: Folie à Deux. Check the output... I just fixed these manually myself within Jellyfin." — **2dee11**
 
 ### 5. Ingest into Jellyfin
 Go to your Jellyfin WebUI:
