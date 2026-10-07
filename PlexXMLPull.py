@@ -1,5 +1,7 @@
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
+import csv
+from collections import Counter
 
 def generate_audit_log(input_xml, output_txt):
     # Open output file natively in UTF-8
@@ -53,43 +55,90 @@ def generate_audit_log(input_xml, output_txt):
                 if last_viewed_at and last_viewed_at.lstrip('-').isdigit():
                     last_viewed_date = datetime.fromtimestamp(int(last_viewed_at), timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
 
-                part_element = elem.find(".//Part")
-                file_path = part_element.get('file') if part_element is not None else "No file path"
-
                 collection_elements = elem.findall(".//Collection")
                 collection_tags = [col.get('tag') for col in collection_elements if col.get('tag')]
                 collections = ", ".join(collection_tags) if collection_tags else None
 
-                if not first:
-                    out_file.write("\n")
-                first = False
+                # Find ALL file parts under this video entry across all <Media> tags
+                part_elements = elem.findall(".//Part")
+                
+                for part in part_elements:
+                    file_path = part.get('file') if part is not None else "No file path"
 
-                # Write directly to disk
-                out_file.write(f"Movie Title: {movie_title}\n")
-                if year:
-                    out_file.write(f"  Year: {year}\n")
-                if imdb_id:
-                    out_file.write(f"  IMDB ID: {imdb_id}\n")
-                if tmdb_id:
-                    out_file.write(f"  TMDB ID: {tmdb_id}\n")
-                if tvdb_id:
-                    out_file.write(f"  TVDB ID: {tvdb_id}\n")
-                if title_sort:
-                    out_file.write(f"  TitleSort: {title_sort}\n")
-                if original_title:
-                    out_file.write(f"  OriginalTitle: {original_title}\n")
-                if added_at_date:
-                    out_file.write(f"  AddedAt: {added_at_date}\n")
-                if last_viewed_date:
-                    out_file.write(f"  LastViewedAt: {last_viewed_date}\n")
-                if view_count:
-                    out_file.write(f"  ViewCount: {view_count}\n")
-                if collections:
-                    out_file.write(f"  Collections: {collections}\n")
-                out_file.write(f"  File Path: {file_path}\n")
+                    if not first:
+                        out_file.write("\n")
+                    first = False
+
+                    # Write entry to audit log per file path
+                    out_file.write(f"Movie Title: {movie_title}\n")
+                    if year:
+                        out_file.write(f"  Year: {year}\n")
+                    if imdb_id:
+                        out_file.write(f"  IMDB ID: {imdb_id}\n")
+                    if tmdb_id:
+                        out_file.write(f"  TMDB ID: {tmdb_id}\n")
+                    if tvdb_id:
+                        out_file.write(f"  TVDB ID: {tvdb_id}\n")
+                    if title_sort:
+                        out_file.write(f"  TitleSort: {title_sort}\n")
+                    if original_title:
+                        out_file.write(f"  OriginalTitle: {original_title}\n")
+                    if added_at_date:
+                        out_file.write(f"  AddedAt: {added_at_date}\n")
+                    if last_viewed_date:
+                        out_file.write(f"  LastViewedAt: {last_viewed_date}\n")
+                    if view_count:
+                        out_file.write(f"  ViewCount: {view_count}\n")
+                    if collections:
+                        out_file.write(f"  Collections: {collections}\n")
+                    out_file.write(f"  File Path: {file_path}\n")
 
                 # Clear element to free memory
                 elem.clear()
 
+def parse_movies_to_csv(input_path, output_path):
+    movies = []
+    current_movie = {}
+    all_keys = set()
+
+    # 1. Read the text file and parse into dictionaries
+    with open(input_path, 'r', encoding='utf-8') as file:
+        for line in file:
+            line = line.strip()
+            
+            if not line:
+                if current_movie:
+                    movies.append(current_movie)
+                    current_movie = {}
+            elif ': ' in line:
+                key, value = line.split(': ', 1)
+                current_movie[key] = value
+                all_keys.add(key)
+        
+        if current_movie:
+            movies.append(current_movie)
+
+    # 2. Count the occurrences of each title
+    title_counts = Counter(movie.get('Movie Title') for movie in movies if 'Movie Title' in movie)
+
+    # 3. Add the 'Title Count' field to every movie record
+    for movie in movies:
+        title = movie.get('Movie Title')
+        movie['Title Count'] = title_counts.get(title, 0)
+    
+    all_keys.add('Title Count')
+
+    # 4. Define the column order, placing 'Title Count' next to 'Movie Title'
+    preferred_order = ["Movie Title", "Title Count", "Year", "IMDB ID", "TMDB ID", "TVDB ID", "AddedAt", "File Path"]
+    headers = [key for key in preferred_order if key in all_keys]
+    headers.extend([key for key in all_keys if key not in headers])
+
+    # 5. Write to CSV
+    with open(output_path, 'w', newline='', encoding='utf-8') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=headers)
+        writer.writeheader()
+        writer.writerows(movies)
+
 if __name__ == "__main__":
     generate_audit_log('metadata.xml', 'audit_log.txt')
+    parse_movies_to_csv('audit_log.txt', 'audit_log.csv')
