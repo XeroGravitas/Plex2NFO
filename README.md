@@ -66,7 +66,7 @@ It also outputs `audit_log.csv`, with a count of each Movie Title. This allows f
 
 If the audit log looks good, type `Y` in the PowerShell window to continue.
 
-The script will run `JellyfinNFOCreator.py`. This will read your `audit_log.txt` and generate a perfectly formatted `MOVIENAME.nfo` file directly next to every media file in your directories, including titles with multiple parts or multiple version.
+The script will run `JellyfinNFOCreator.py`. This will read your `audit_log.txt` and generate a perfectly formatted `MOVIENAME.nfo` file directly next to every media file in your directories, including titles with multiple parts or multiple versions.
 
 ### 5. Ingest into Jellyfin
 
@@ -87,7 +87,7 @@ Once Jellyfin has finished updating the metadata, I recommend installing [Plexyf
 ## Notes & Limitations
 
 - **No TV Show Support:** Currently, this script only parses Movie libraries. It does not work for TV Shows.
-- **No Automatic Duplicate Cleanup** Plex items with multiple versions (Theatrical and Director's Cuts etc.) will appear as separate items in Jellyfin and need to be merged manually (Select each version > Three dots menu > Group Versions). `audit_log.csv` is now included to help streamline this workflow.
+- **No Automatic Duplicate Cleanup:** Plex items with multiple versions (Theatrical and Director's Cuts etc.) will appear as separate items in Jellyfin and need to be merged manually (Select each version > Three dots menu > Group Versions). `audit_log.csv` is now included to help streamline this workflow.
 - **Collections Cleanup:** The scripts correctly format the XML tags for Box Sets/Collections, but depending on your Jellyfin setup, you may still need the **TMDb Box Sets Plugin** installed to pull down the artwork and metadata for those collections.
 - **Optional Scripts Removed:** Previous versions of this repo included standalone scripts just for exporting Collections. These have been archived/removed to streamline the main working branch.
 
