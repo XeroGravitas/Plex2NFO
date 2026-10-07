@@ -82,6 +82,8 @@ Jellyfin will read the `.nfo` files and your movies should be just as they were 
 
 Once Jellyfin has finished updating the metadata, I recommend installing [Plexyfin](https://github.com/cleverdevil/plexyfin) as a Jellyfin plugin and running it with the `Force Replace All Artwork` flag. This will import all of your custom movie posters from Plex, completing your brand new mirrored library!
 
+I also recommend installing and running [WatchState](https://github.com/arabcoders/watchstate) to sync your Plex play history.
+
 ---
 
 ## Notes & Limitations
