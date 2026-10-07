@@ -66,15 +66,17 @@ Go to your Jellyfin WebUI:
 2. Click the three-dot menu on the updated library and select **Scan Library**.
 3. Choose **Replace all metadata** and let it run. 
 
-Jellyfin will read the `.nfo` files and your movies should be just as they were in Plex, locked to the exact database matches. 
+Jellyfin will read the `.nfo` files and your movies should be just as they were in Plex, locked to the exact database matches. This may take a while for large libraries, depending on storage speed etc.
 
-> "After this initial bulk 'upload' I would suggest going into settings and selecting Manage Library for each Library and under Metadata Savers section check Nfo. Now scan library and replace all metadata... Now from this point on any changes you make Jellyfin will keep those new movie.nfo files updated." — **2dee11**
+### 6. Optional finishing touch
+Once Jellyfin has finished updating the metadata, I recommend installing [Plexyfin](https://github.com/cleverdevil/plexyfin) as a Jellyfin plugin and running it with the `Force Replace All Artwork` flag. This will import all of your custom movie posters from Plex, completing your brand new mirrored library!
 
 ---
 
 ## Notes & Limitations
 
 * **No TV Show Support:** Currently, this script only parses Movie libraries. It does not work for TV Shows.
+* **No Duplicate Cleanup** Plex items with multiple versions (Theatrical and Director's Cuts etc.) will appear as separate items in Jellyfin and need to be merged manually.
 * **Collections Cleanup:** The scripts correctly format the XML tags for Box Sets/Collections, but depending on your Jellyfin setup, you may still need the **TMDb Box Sets Plugin** installed to pull down the artwork and metadata for those collections.
 * **Optional Scripts Removed:** Previous versions of this repo included standalone scripts just for exporting Collections. These have been archived/removed to streamline the main working branch.
 
