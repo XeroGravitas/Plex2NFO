@@ -4,7 +4,7 @@
 
 These scripts were developed strictly for personal use to solve a specific migration headache on my own home server. While they work perfectly for my setup, your environment, folder structures, or Plex agent history might behave differently.
 
-Please use with care. Always run a test on a single file or small library first (as outlined in the steps below), and always ensure you have backups of your Jellyfin database and media directories before running automated scripts. Use at your own risk!
+Please use with care. Always run a test on a single file or small library first (as outlined in the steps below), and always ensure you have backups of your Plex database and media directories before running automated scripts. Use at your own risk!
 
 ---
 
